@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import router from './controllers';
 dotenv.config();
 
+
 const app = Express();
 
 
@@ -16,3 +17,5 @@ app.get("/health", () => {
 app.listen(process.env.PORT, () => {
     console.log("Application running")
 })
+
+
