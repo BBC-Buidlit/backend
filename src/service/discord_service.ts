@@ -10,9 +10,9 @@ export default class DiscordService {
     this.discordClient = discord;
   }
 
-  async getUserDetails(accessToken: string, userId: string) {
+  async getUserDetails(accessToken: string, userId?: string) {
     try {
-      this.discordClient.getUserDetails(accessToken);
+      return await this.discordClient.getUserDetails(accessToken);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         if (err.code == "400") {
@@ -34,6 +34,7 @@ export default class DiscordService {
 
   async getUserGuilds(accessToken: string, userId: string) {
     try {
+      return await this.discordClient.getUserGuilds(accessToken);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         if (err.code == "400") {

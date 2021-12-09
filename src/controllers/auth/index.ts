@@ -1,7 +1,13 @@
 import { Request, Response, Router } from "express";
 
 import axios from "axios";
+import UserService from "../../service/user_service";
+import DiscordService from "../../service/discord_service";
+import DiscordClient from "../../client/discord_client";
 const router = Router();
+import jwt from "jsonwebtoken";
+const userService = new UserService();
+const discordService = new DiscordService(new DiscordClient());
 
 export const AuthController = router
   .get("/authorize", async (req: Request, res: Response) => {
@@ -12,7 +18,7 @@ export const AuthController = router
   .get(
     "/callback",
     async (
-      req: Request<any, any, any, { code: string }, any>,
+      req: Request<unknown, unknown, unknown, { code: string }>,
       res: Response
     ) => {
       if (!req.query.code)
@@ -40,7 +46,15 @@ export const AuthController = router
             Accept: "application/json",
           },
         });
-        return res.json({ token: response.data["access_token"] }); //@lakshya, change to redirect
+        const accessToken = response.data["access_token"] as string;
+        const discordUser = await discordService.getUserDetails(accessToken);
+        const user = await userService.saveFromDiscordUser(
+          accessToken,
+          discordUser
+        );
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET ?? "");
+
+        return res.json({ token });
       } catch (err) {
         return res.status(400).json({ error: err });
       }
