@@ -28,6 +28,7 @@ class UserService {
       access_token: accessToken,
       username: discordUser.username,
       discord_id: discordUser.id,
+      avatar_id: discordUser.avatar,
     };
     return await this.addOne({ ...user });
   }

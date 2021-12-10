@@ -3,6 +3,7 @@ import { model, Schema } from "mongoose";
 export interface IUser {
   access_token: string;
   username: string;
+  avatar_id?: string;
   wallet_id?: string;
   discord_id: string; // the uuid which maps to discord
 }
@@ -25,6 +26,9 @@ const userSchema = new Schema({
   wallet_id: {
     type: String,
     unique: true,
+  },
+  avatar_id: {
+    type: String,
   },
 });
 
