@@ -3,12 +3,20 @@ import { model, Schema } from "mongoose";
 export interface IServer {
   owner_id: string; // internal id of user
   discord_id: string; // uuid which maps to discord
+  name: string;
+  avatar: string | null;
 }
 const serverSchema = new Schema({
   owner_id: {
     type: String,
   },
-  disord_id: {
+  discord_id: {
+    type: String,
+  },
+  name: {
+    type: String,
+  },
+  avatar: {
     type: String,
   },
 });

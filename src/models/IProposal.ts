@@ -5,6 +5,7 @@ export interface IProposal {
   server_id: string;
   question_id: string;
   question_text: string;
+  avatar_id?: string;
 }
 
 const proposalSchema = new Schema({
@@ -23,6 +24,9 @@ const proposalSchema = new Schema({
   question_text: {
     type: String,
     required: true,
+  },
+  avatar_id: {
+    type: String,
   },
 });
 
