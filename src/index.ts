@@ -2,11 +2,14 @@ import Express from "express";
 import dotenv from "dotenv";
 import router from "./controllers";
 import mongoose from "mongoose";
+import cors from "cors";
+
 dotenv.config();
 
 const app = Express();
 
 app.use(router);
+app.use(cors());
 
 app.get("/health", () => {
   console.log("Application is running well");
