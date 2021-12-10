@@ -3,13 +3,17 @@ import dotenv from "dotenv";
 import router from "./controllers";
 import mongoose from "mongoose";
 import cors from "cors";
+import bodyParser from "body-parser";
 
 dotenv.config();
 
 const app = Express();
 
-app.use(router);
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(cors());
+
+app.use(router);
 
 app.get("/health", () => {
   console.log("Application is running well");
