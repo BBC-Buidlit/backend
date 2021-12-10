@@ -20,6 +20,7 @@
   "homepage": "https://github.com/BBC-Buidlit/backend#readme",
   "dependencies": {
     "@discordjs/rest": "^0.1.0-canary.0",
+    "@openzeppelin/contracts": "^4.4.0",
     "@types/axios": "^0.14.0",
     "@types/body-parser": "^1.19.2",
     "@types/btoa": "^1.2.3",
