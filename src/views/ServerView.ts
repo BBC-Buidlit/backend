@@ -1,4 +1,4 @@
-import { IDiscordServer } from "../models/IDiscord";
+import { IDiscordServerOveriew } from "../models/IDiscord";
 import { IServer } from "../models/IServer";
 
 class ServerView {
@@ -30,7 +30,7 @@ class ServerView {
       guild.discord_id,
       guild.name,
       guild.owner ?? false,
-      guild.avatar
+      guild.icon
     );
   }
 }

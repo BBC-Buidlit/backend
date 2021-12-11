@@ -12,7 +12,7 @@ export interface IDiscordUser {
   mfa_enabled: boolean;
 }
 
-export interface IDiscordServer {
+export interface IDiscordServerOveriew {
   id: string;
   name: string;
   icon: string;
@@ -20,4 +20,24 @@ export interface IDiscordServer {
   permissions: number;
   features: string[];
   permissions_new: string;
+}
+
+//todo: @lakshya, need to update this
+export interface IDiscordServer {
+  id: string;
+  name: string;
+  icon: string;
+  owner: boolean;
+  owner_id: string;
+  permissions: number;
+  features: string[];
+  permissions_new: string;
+}
+
+export interface IDiscordAuthResponse {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+  refresh_token: string;
+  scope: string;
 }

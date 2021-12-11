@@ -4,7 +4,7 @@ export interface IServer {
   owner_id: string; // internal id of user
   discord_id: string; // uuid which maps to discord
   name: string;
-  avatar: string | null;
+  icon: string | null;
 }
 const serverSchema = new Schema({
   owner_id: {
@@ -16,7 +16,7 @@ const serverSchema = new Schema({
   name: {
     type: String,
   },
-  avatar: {
+  icon: {
     type: String,
   },
 });

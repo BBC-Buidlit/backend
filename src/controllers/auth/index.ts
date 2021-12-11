@@ -10,62 +10,43 @@ const userService = new UserService();
 const discordService = new DiscordService(new DiscordClient());
 
 export const AuthController = router
-	.get("/authorize", async (req: Request, res: Response) => {
-		return res.redirect(
-			`https://discord.com/api/oauth2/authorize?client_id=770661156335386626&redirect_uri=http%3A%2F%2Flocalhost%3A9000%2Fauth%2Fcallback&response_type=code&scope=identify%20guilds`
-		);
-	})
-	.get(
-		"/callback",
-		async (
-			req: Request<unknown, unknown, unknown, { code: string }>,
-			res: Response
-		) => {
-			if (!req.query.code)
-				return res.status(400).json({ message: "Code is required" });
-			try {
-				const { CLIENT_ID, REDIRECT_URI, DISCORD_AUTH } = process.env;
-				if (!CLIENT_ID || !REDIRECT_URI || !DISCORD_AUTH)
-					return res
-						.status(500)
-						.json("Environment variables not found");
-				const code = req.query.code;
+  .get("/authorize", async (req: Request, res: Response) => {
+    return res.redirect(
+      `https://discord.com/api/oauth2/authorize?client_id=770661156335386626&redirect_uri=http%3A%2F%2Flocalhost%3A9000%2Fauth%2Fcallback&response_type=code&scope=identify%20guilds`
+    );
+  })
+  .get(
+    "/callback",
+    async (
+      req: Request<unknown, unknown, unknown, { code: string }>,
+      res: Response
+    ) => {
+      if (!req.query.code)
+        return res.status(400).json({ message: "Code is required" });
+      try {
+        const { CLIENT_ID, REDIRECT_URI, DISCORD_AUTH } = process.env;
+        if (!CLIENT_ID || !REDIRECT_URI || !DISCORD_AUTH)
+          return res.status(500).json("Environment variables not found");
+        const code = req.query.code;
+        const response = await discordService.getAccessToken(
+          DISCORD_AUTH,
+          CLIENT_ID,
+          code,
+          REDIRECT_URI
+        );
+        const discordUser = await discordService.getUserDetails(
+          response.access_token
+        );
+        const user = await userService.saveFromDiscordUser(
+          response.access_token,
+          response.refresh_token,
+          discordUser
+        );
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET ?? "");
 
-				const params = new URLSearchParams();
-				params.append("client_id", CLIENT_ID);
-				params.append("grant_type", "authorization_code");
-				params.append("code", code);
-				params.append("redirect_uri", REDIRECT_URI);
-				params.append("scope", "identify");
-
-				const response = await axios({
-					url: "https://discordapp.com/api/oauth2/token",
-					method: "POST",
-					data: params,
-					headers: {
-						Authorization: DISCORD_AUTH,
-						"Content-Type": "application/x-www-form-urlencoded",
-						Accept: "application/json",
-					},
-				});
-				const accessToken = response.data["access_token"] as string;
-				const discordUser = await discordService.getUserDetails(
-					accessToken
-				);
-				const user = await userService.saveFromDiscordUser(
-					accessToken,
-					discordUser
-				);
-				const token = jwt.sign(
-					{ id: user.id },
-					process.env.JWT_SECRET ?? ""
-				);
-
-				return res.redirect(
-					`http://localhost:3000/connect?token=${token}`
-				);
-			} catch (err) {
-				return res.status(400).json({ error: err });
-			}
-		}
-	);
+        return res.redirect(`http://localhost:3000/connect?token=${token}`);
+      } catch (err) {
+        return res.status(400).json({ error: err });
+      }
+    }
+  );

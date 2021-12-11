@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { model, Schema } from "mongoose";
 
 export interface IProposal {
   user_id: string;
@@ -6,6 +6,7 @@ export interface IProposal {
   question_id: string;
   question_text: string;
   avatar_id?: string;
+  _id: string;
 }
 
 const proposalSchema = new Schema({
@@ -30,4 +31,6 @@ const proposalSchema = new Schema({
   },
 });
 
-export default proposalSchema;
+const proposalModel = model<IProposal>("positon", proposalSchema);
+
+export default proposalModel;

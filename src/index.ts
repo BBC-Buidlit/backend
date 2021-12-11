@@ -13,11 +13,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use(router);
-
 app.get("/health", () => {
   console.log("Application is running well");
 });
+
+app.use(router);
 
 mongoose
   .connect(process.env.DB_URL ?? "mongodb://localhost:27017/bbc-backend")
