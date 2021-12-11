@@ -1,0 +1,133 @@
+{
+	"info": {
+		"_postman_id": "bb10b102-3566-4483-97f2-3f61f152b5f5",
+		"name": "BBC-Backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get user details",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxYjNiZTQ4MzBmNWM1YmMyOTAwNDA0ZiIsImlhdCI6MTYzOTIzMDY4NH0.E3tnC1wbAQpIEbMgZO-V2qKFfhleSp6jRTd214ZtQwI",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:9000/user/",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"user",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Owned discord servers",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxYjNiZTQ4MzBmNWM1YmMyOTAwNDA0ZiIsImlhdCI6MTYzOTE2OTYwOH0.-Ws2t-ux52MmjWH-jM961zalCoWDjhsuxn-1QVtdwBk",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:9000/server/discord_owned",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"server",
+						"discord_owned"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Import owned servers",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxYjNiZTQ4MzBmNWM1YmMyOTAwNDA0ZiIsImlhdCI6MTYzOTE2OTYwOH0.-Ws2t-ux52MmjWH-jM961zalCoWDjhsuxn-1QVtdwBk",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:9000/server/import/714489527615619172",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"server",
+						"import",
+						"714489527615619172"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user guild details",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxYjNiZTQ4MzBmNWM1YmMyOTAwNDA0ZiIsImlhdCI6MTYzOTE2OTYwOH0.-Ws2t-ux52MmjWH-jM961zalCoWDjhsuxn-1QVtdwBk",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:9000/server",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"server"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user guilds Copy",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxYjNiZTQ4MzBmNWM1YmMyOTAwNDA0ZiIsImlhdCI6MTYzOTE2OTYwOH0.-Ws2t-ux52MmjWH-jM961zalCoWDjhsuxn-1QVtdwBk",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:9000/server",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"server"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
