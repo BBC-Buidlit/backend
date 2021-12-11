@@ -77,6 +77,11 @@ class ServerService {
         throw new UnAuthorized(
           `User ${user._id} doesn't have access to import this server`
         );
+      const existing = await serverModel.findOne({ discord_id: discordId });
+      if (existing)
+        throw new BadRequest(
+          `Server with discord id ${discordId} already exists`
+        );
 
       const server = await serverModel.create({
         owner_id: discordServer.owner_id,

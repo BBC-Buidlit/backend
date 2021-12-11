@@ -5,6 +5,7 @@ export interface IServer {
   discord_id: string; // uuid which maps to discord
   name: string;
   icon: string | null;
+  _id: string;
 }
 const serverSchema = new Schema({
   owner_id: {

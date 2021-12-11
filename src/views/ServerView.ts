@@ -6,30 +6,30 @@ class ServerView {
   discord_id = "";
   avatar: string | null = "";
   name = "";
-  owner = false;
+  owner_id: string | null = null;
 
   constructor(
     id: string | null,
     discordId: string,
     name: string,
-    owner: boolean,
+    owner_id: string,
     avatar: string | null
   ) {
-    this.id = null;
+    this.id = id;
     this.discord_id = discordId;
     this.name = name;
     this.avatar = avatar
       ? `https://cdn.discordapp.com/icons/${discordId}/${avatar}`
       : null;
-    this.owner = owner;
+    this.owner_id = owner_id;
   }
 
-  static fromGuild(guild: IServer & { id?: string; owner?: boolean }) {
+  static fromServer(guild: IServer) {
     return new ServerView(
-      guild.id ?? null,
+      guild._id,
       guild.discord_id,
       guild.name,
-      guild.owner ?? false,
+      guild.owner_id,
       guild.icon
     );
   }

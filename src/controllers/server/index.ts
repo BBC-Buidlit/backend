@@ -30,8 +30,8 @@ const ServerController = router
         return res.json({
           ...UserView.fromUser(user),
           guilds: guilds.map((guild) =>
-            // todo: better view mapper
-            ServerView.fromGuild({
+            ServerView.fromServer({
+              _id: guild._id,
               name: guild.name,
               discord_id: guild.discord_id,
               owner_id: guild.owner_id,
@@ -67,10 +67,12 @@ const ServerController = router
           ...UserView.fromUser(user),
           guilds: guilds.map((guild) =>
             // todo: better view mapper
-            ServerView.fromGuild({
+            ServerView.fromServer({
+              _id: "",
               name: guild.name,
               discord_id: guild.id,
               owner_id: user.id,
+
               icon: guild.icon,
             })
           ),
@@ -109,6 +111,28 @@ const ServerController = router
             .status(err.httpStatusCode)
             .json({ message: `${err.name} : ${err.message}` });
         }
+        console.error(err);
+        return res.status(500).json({ message: "Something went wrong" });
+      }
+    }
+  )
+  .get(
+    "/:id",
+    async (
+      req: Request<{ id: string }, unknown, unknown, { id: string }>,
+      res: Response
+    ) => {
+      try {
+        const server = await serverService.getServerDetails(req.params.id);
+        return res.json({ server: ServerView.fromServer(server) });
+      } catch (err) {
+        if (err instanceof BackendError) {
+          return res
+            .status(err.httpStatusCode)
+            .json({ message: `${err.name} : ${err.message}` });
+        }
+        console.error(err);
+        return res.status(500).json({ message: "Something went wrong" });
       }
     }
   );
