@@ -1,7 +1,6 @@
 import { Request, Response, Router } from "express";
 import DiscordClient from "../../client/discord_client";
 import BackendError from "../../exceptions/backend_error";
-import UnAuthorized from "../../exceptions/unauthorized";
 import DiscordService from "../../service/discord_service";
 import ServerService from "../../service/server_service";
 import UserService from "../../service/user_service";
@@ -25,7 +24,7 @@ const ServerController = router
         const user = await userService.getOneById(req.query.id);
         const guilds = await serverService.getConnectedServers(
           user.access_token,
-          user.id
+          user._id
         );
         return res.json({
           ...UserView.fromUser(user),
@@ -61,17 +60,16 @@ const ServerController = router
         const user = await userService.getOneById(req.query.id);
         const guilds = await serverService.getGuildsWhereUserIsOwner(
           user.access_token,
-          user._id
+          user
         );
         return res.json({
           ...UserView.fromUser(user),
           guilds: guilds.map((guild) =>
-            // todo: better view mapper
             ServerView.fromServer({
               _id: "",
               name: guild.name,
               discord_id: guild.id,
-              owner_id: user.id,
+              owner_id: user._id,
 
               icon: guild.icon,
             })

@@ -1,5 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+
+/**
+ * @description: Authenticate middleware method which protects protected route from public also hydrates the route with user id
+ * @param req
+ * @param res
+ * @param next
+ * @returns next()
+ */
 const authenticateUser = async (
   req: Request,
   res: Response,

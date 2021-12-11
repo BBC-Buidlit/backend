@@ -1,6 +1,11 @@
 import { IDiscordServerOveriew } from "../models/IDiscord";
 import { IServer } from "../models/IServer";
 
+/**
+ *
+ * @description This is a view layer class which casts IServer to required object while sending to client
+ *
+ */
 class ServerView {
   id: string | null = "";
   discord_id = "";

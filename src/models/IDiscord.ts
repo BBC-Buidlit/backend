@@ -22,7 +22,6 @@ export interface IDiscordServerOveriew {
   permissions_new: string;
 }
 
-//todo: @lakshya, need to update this
 export interface IDiscordServer {
   id: string;
   name: string;

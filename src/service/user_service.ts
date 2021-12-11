@@ -5,7 +5,12 @@ import { IDiscordUser } from "../models/IDiscord";
 import userModel, { IUser } from "../models/IUser";
 
 class UserService {
-  async getOneById(id: string) {
+  /**
+   *
+   * @param id
+   * @returns Promise<IUser>
+   */
+  async getOneById(id: string): Promise<IUser> {
     if (!Types.ObjectId.isValid(id))
       throw new BadRequest(`Invalid user id : ${id}`);
 
@@ -14,7 +19,18 @@ class UserService {
     return user;
   }
 
-  async addOne(userPayload: IUser) {
+  /**
+   *
+   * @param userPayload
+   * @returns Promise<IUser>
+   */
+  async addOne(userPayload: {
+    username: string;
+    access_token: string;
+    refresh_token: string;
+    avatar_id: string;
+    discord_id: string;
+  }): Promise<IUser> {
     const { discord_id } = userPayload;
 
     try {
@@ -35,12 +51,19 @@ class UserService {
     }
   }
 
+  /**
+   *
+   * @param accessToken
+   * @param refreshToken
+   * @param discordUser
+   * @returns Promise<IUser>
+   */
   async saveFromDiscordUser(
     accessToken: string,
     refreshToken: string,
     discordUser: IDiscordUser
-  ) {
-    const user: IUser = {
+  ): Promise<IUser> {
+    const user = {
       access_token: accessToken,
       username: discordUser.username,
       discord_id: discordUser.id,

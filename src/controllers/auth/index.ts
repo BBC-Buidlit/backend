@@ -42,7 +42,7 @@ export const AuthController = router
           response.refresh_token,
           discordUser
         );
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET ?? "");
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET ?? "");
 
         return res.redirect(`http://localhost:3000/connect?token=${token}`);
       } catch (err) {

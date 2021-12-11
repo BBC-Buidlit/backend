@@ -67,7 +67,7 @@
 					}
 				],
 				"url": {
-					"raw": "localhost:9000/server/import/714489527615619172",
+					"raw": "localhost:9000/server/import/725288689030266970",
 					"host": [
 						"localhost"
 					],
@@ -75,14 +75,14 @@
 					"path": [
 						"server",
 						"import",
-						"714489527615619172"
+						"725288689030266970"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Get user guild details",
+			"name": "Get user guilds",
 			"request": {
 				"method": "GET",
 				"header": [
@@ -106,7 +106,7 @@
 			"response": []
 		},
 		{
-			"name": "Get user guilds Copy",
+			"name": "Get server details",
 			"request": {
 				"method": "GET",
 				"header": [
@@ -117,13 +117,14 @@
 					}
 				],
 				"url": {
-					"raw": "localhost:9000/server",
+					"raw": "localhost:9000/server/61b4e0853988b1dfdcfaecca",
 					"host": [
 						"localhost"
 					],
 					"port": "9000",
 					"path": [
-						"server"
+						"server",
+						"61b4e0853988b1dfdcfaecca"
 					]
 				}
 			},

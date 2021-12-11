@@ -1,3 +1,6 @@
+/**
+ * @description Generic Backend Exception class
+ */
 export default class BackendError extends Error {
   httpStatusCode: number;
 

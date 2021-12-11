@@ -4,9 +4,18 @@ import BadRequest from "../exceptions/bad_request";
 import EntityNotFound from "../exceptions/entity_not_found";
 import ServerError from "../exceptions/server_error";
 import UnAuthorized from "../exceptions/unauthorized";
-import { IDiscordServer } from "../models/IDiscord";
-import { IUser } from "../models/IUser";
+import {
+  IDiscordServer,
+  IDiscordServerOveriew,
+  IDiscordUser,
+} from "../models/IDiscord";
 
+/**
+ *
+ * @description Discord Service class,
+ * @param DiscordClient
+ *
+ */
 export default class DiscordService {
   discordClient: DiscordClient;
 
@@ -14,7 +23,17 @@ export default class DiscordService {
     this.discordClient = discord;
   }
 
-  async getUserDetails(accessToken: string, userId?: string) {
+  /**
+   *
+   * @description Fetches user details from discord
+   * @param accessToken
+   * @param userId
+   * @returns IDiscordUser
+   */
+  async getUserDetails(
+    accessToken: string,
+    userId?: string
+  ): Promise<IDiscordUser> {
     try {
       return await this.discordClient.getUserDetails(accessToken);
     } catch (err) {
@@ -36,7 +55,17 @@ export default class DiscordService {
     }
   }
 
-  async getUserGuilds(accessToken: string, userId: string) {
+  /**
+   *
+   * @description Fetches all guilds user is memeber of from discord
+   * @param accessToken
+   * @param userId
+   * @returns Promise<IDiscordServerOveriew[]>
+   */
+  async getUserGuilds(
+    accessToken: string,
+    userId: string
+  ): Promise<IDiscordServerOveriew[]> {
     try {
       return await this.discordClient.getUserGuilds(accessToken);
     } catch (err) {
@@ -58,6 +87,11 @@ export default class DiscordService {
     }
   }
 
+  /**
+   * @description Fetches Guild details from discord
+   * @param serverId
+   * @returns Promise<IDiscordServer>
+   */
   async getGuildDetails(serverId: string): Promise<IDiscordServer> {
     try {
       return await this.discordClient.getServerDetails(serverId);
@@ -88,6 +122,14 @@ export default class DiscordService {
     }
   }
 
+  /**
+   *
+   * @param discordAuth
+   * @param clientId
+   * @param code
+   * @param redirectUrl
+   * @returns Promise<{ access_token: string; refresh_token: string }>
+   */
   async getAccessToken(
     discordAuth: string,
     clientId: string,
@@ -125,6 +167,10 @@ export default class DiscordService {
     }
   }
 
+  /**
+   *
+   * @TODO : This method needs to be implemented @lakshyabatman
+   */
   async refreshAccessToken(
     discordAuth: string,
     clientId: string,

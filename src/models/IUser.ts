@@ -7,7 +7,7 @@ export interface IUser {
   wallet_id?: string;
   refresh_token: string;
   discord_id: string; // the uuid which maps to discord,
-  _id?: string;
+  _id: string;
 }
 
 const userSchema = new Schema({

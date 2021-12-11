@@ -1,5 +1,10 @@
 import { IUser } from "../models/IUser";
 
+/**
+ *
+ * @description This is a view layer class which casts IUser to required object while sending to client
+ *
+ */
 class UserView {
   id = "";
   username = "";

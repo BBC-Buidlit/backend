@@ -11,6 +11,11 @@ const api = axios.create({
 });
 
 class DiscordClient {
+  /**
+   * @description Get user details from discord
+   * @param accessToken
+   * @returns Promise<IDiscordUser>
+   */
   async getUserDetails(accessToken: string): Promise<IDiscordUser> {
     const response = await api.request<IDiscordUser>({
       method: "GET",
@@ -22,6 +27,12 @@ class DiscordClient {
     return response.data;
   }
 
+  /**
+   *
+   * @description Get guilds connected to the user
+   * @param accessToken
+   * @returns Promise<IDiscordServerOveriew[]>
+   */
   async getUserGuilds(accessToken: string): Promise<IDiscordServerOveriew[]> {
     const response = await api.request<IDiscordServerOveriew[]>({
       method: "GET",
@@ -33,17 +44,30 @@ class DiscordClient {
     return response.data;
   }
 
+  /**
+   * @description Get server details using server id from discord. Make sure the bot is invited to the server
+   * @param serverId
+   * @returns
+   */
   async getServerDetails(serverId: string): Promise<IDiscordServer> {
+    const { DISCORD_BOT_KEY } = process.env;
+    if (!DISCORD_BOT_KEY) throw new Error("Bot key is required");
     const response = await api.request<IDiscordServer>({
       method: "GET",
       url: `guilds/${serverId}`,
       headers: {
-        Authorization: `Bot NzcwNjYxMTU2MzM1Mzg2NjI2.X5g0IQ.CAeOm4yKe6WXvaAiQfy35EpIccs`, //todo: use environment tracker
+        Authorization: `Bot ${DISCORD_BOT_KEY}`,
       },
     });
     return response.data;
   }
 
+  /**
+   * @description get access token from discord oauth
+   * @param discordAuth
+   * @param params
+   * @returns  Promise<{ access_token: string; refresh_token: string }>
+   */
   async getAccessToken(
     discordAuth: string,
     params: URLSearchParams
@@ -60,6 +84,13 @@ class DiscordClient {
     const { access_token, refresh_token } = response.data;
     return { access_token, refresh_token };
   }
+
+  /**
+   * @description Get new access keys using refresh token from discord oauth
+   * @param discordAuth
+   * @param params
+   * @returns Promise<{ access_token: string; refresh_token: string }>
+   */
   async refreshAccessToken(
     discordAuth: string,
     params: URLSearchParams
