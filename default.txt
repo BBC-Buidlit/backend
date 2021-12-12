@@ -1,0 +1,68 @@
+let ct = await ConditionalTokens.deployed()
+
+let ctAddress = ct.address
+
+// prepare conditions
+
+prepareCondition = ct.prepareCondition('0xF672eB74A0b9A504bAD59b3bfe670816714D9a63',"0xFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000000000001","2")
+
+
+// get condition id
+conditionId = ct.getConditionId("0xF672eB74A0b9A504bAD59b3bfe670816714D9a63","0xFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000000000001","2")
+// get collection id
+
+cid1 = ct.getCollectionId('0x0000000000000000000000000000000000000000000000000000000000000000', '0x5e1f0557bf9ae2fa3874554b645ce29ae2d98cbdf418cde732a7645557c46e5e', '1')
+cid2 = ct.getCollectionId('0x0000000000000000000000000000000000000000000000000000000000000000', '0x5e1f0557bf9ae2fa3874554b645ce29ae2d98cbdf418cde732a7645557c46e5e', '2')
+
+
+
+//init collateralToken
+collateralToken = await CollateralToken.deployed()
+// get position id
+
+posId1 = await ct.getPositionId(collateralToken.address, '0x01b1c0f6150bad34f5e9e11d46d9d362bc41deb1764a6ed4f17f3896ef497e6d')
+posId2 = await ct.getPositionId(collateralToken.address, '0x040485e1e751f63c6ea96f9088d529b901428c79e00d2f41e5fab1e6b495ac37')
+
+p1 = posId1.toString();
+p2 = posId2.toString();
+
+
+
+// collateralToken.approve("0xF672eB74A0b9A504bAD59b3bfe670816714D9a63",1000)
+// collateralToken.mint("0xF672eB74A0b9A504bAD59b3bfe670816714D9a63",1000)
+
+
+tx_mint = await collateralToken.mint(ct.address,1000)
+collateralToken.approve(ct.address,1000)
+
+// split position
+tx_splitPosition = await ct.splitPosition(collateralToken.address,"0x0000000000000000000000000000000000000000000000000000000000000000",'0x5e1f0557bf9ae2fa3874554b645ce29ae2d98cbdf418cde732a7645557c46e5e',[1,2] , 100 )
+
+tx_splitPosition = await ct.splitPosition(collateralToken.address,"0x0000000000000000000000000000000000000000000000000000000000000000",'0x5e1f0557bf9ae2fa3874554b645ce29ae2d98cbdf418cde732a7645557c46e5e',[0b10,0b01] , 100 )
+
+
+fullset(ct.address,collateralToken.address,["0x5e1f0557bf9ae2fa3874554b645ce29ae2d98cbdf418cde732a7645557c46e5e"],0,['73681521650069292875940469080584667871854305926332113366437860960968271976770','92737800003468047223970956959525310085111403469154705424872361239463133340416'])
+
+outcomeSlotCounts =
+
+
+//     uint256 saltNonce,
+//     ConditionalTokens conditionalTokens,
+//     IERC20 collateralToken,
+//     bytes32[] calldata conditionIds,
+//     uint256 fee,
+//     uint256 initialFunds,
+//     uint256[] calldata distributionHint
+
+
+createArgs = [saltNonce,ct.address,collateralToken.address,[conditionId],fee,initFunds,initialD]
+
+const fixedProductMarketMakerAddress = await fpmmDeterministicFactory.create2FixedProductMarketMaker.call(...createArgs)
+
+
+
+(,ct,collateralToken,[conditionId],0,10,[1,1])
+
+
+// redemption
+await ct.reportPayouts("0xFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000000000001", [0,1])
