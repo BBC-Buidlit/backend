@@ -1,54 +1,27 @@
-pragma solidity ^0.8.0;
+pragma solidity ^0.5.1;
 
-// import "@openzeppelin/contracts/utils/Create2.sol";
-
-import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "./ConditionalTokens.sol";
-import { CTHelpers } from "./CTHelpers.sol";
+import { IERC20 } from "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import { ConditionalTokens } from "@gnosis.pm/conditional-tokens-contracts/contracts/ConditionalTokens.sol";
+import { CTHelpers } from "@gnosis.pm/conditional-tokens-contracts/contracts/CTHelpers.sol";
 import { ConstructedCloneFactory } from "./ConstructedCloneFactory.sol";
-import {
-  FixedProductMarketMaker,
-  FixedProductMarketMakerData
-} from "./FixedProductMarketMaker.sol";
+import { OldFixedProductMarketMaker, OldFixedProductMarketMakerData } from "./OldFixedProductMarketMaker.sol";
+import { ERC1155TokenReceiver } from "@gnosis.pm/conditional-tokens-contracts/contracts/ERC1155/ERC1155TokenReceiver.sol";
 
-import {
-  ERC1155Receiver
-} from "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Receiver.sol";
-import {
-  IERC1155Receiver
-} from "@openzeppelin/contracts/token/ERC1155/IERC1155Receiver.sol";
 
-import {
-  IERC1155MetadataURI
-} from "@openzeppelin/contracts/token/ERC1155/extensions/IERC1155MetadataURI.sol";
-import { ERC1155 } from "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
-import { IERC1155 } from "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
-
-import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
-
-import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
-import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
-
-import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin/contracts/utils/Context.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-
-contract FixedProductMarketMakerFactory is ConstructedCloneFactory, FixedProductMarketMakerData {
+contract FixedProductMarketMakerFactory is ConstructedCloneFactory, OldFixedProductMarketMakerData {
     event FixedProductMarketMakerCreation(
         address indexed creator,
-        FixedProductMarketMaker fixedProductMarketMaker,
+        OldFixedProductMarketMaker fixedProductMarketMaker,
         ConditionalTokens indexed conditionalTokens,
         IERC20 indexed collateralToken,
         bytes32[] conditionIds,
         uint fee
     );
 
-    FixedProductMarketMaker public implementationMaster;
+    OldFixedProductMarketMaker public implementationMaster;
 
     constructor() public {
-        implementationMaster = new FixedProductMarketMaker();
+        implementationMaster = new OldFixedProductMarketMaker();
     }
 
     function cloneConstructor(bytes calldata consData) external {
@@ -61,8 +34,8 @@ contract FixedProductMarketMakerFactory is ConstructedCloneFactory, FixedProduct
 
         _supportedInterfaces[_INTERFACE_ID_ERC165] = true;
         _supportedInterfaces[
-            ERC1155Receiver(address(0)).onERC1155Received.selector ^
-            ERC1155Receiver(address(0)).onERC1155BatchReceived.selector
+            ERC1155TokenReceiver(0).onERC1155Received.selector ^
+            ERC1155TokenReceiver(0).onERC1155BatchReceived.selector
         ] = true;
 
         conditionalTokens = _conditionalTokens;
@@ -114,9 +87,9 @@ contract FixedProductMarketMakerFactory is ConstructedCloneFactory, FixedProduct
         uint fee
     )
         external
-        returns (FixedProductMarketMaker)
+        returns (OldFixedProductMarketMaker)
     {
-        FixedProductMarketMaker fixedProductMarketMaker = FixedProductMarketMaker(
+        OldFixedProductMarketMaker fixedProductMarketMaker = OldFixedProductMarketMaker(
             createClone(address(implementationMaster), abi.encode(
                 conditionalTokens,
                 collateralToken,

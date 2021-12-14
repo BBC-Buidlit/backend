@@ -1,19 +1,28 @@
-// SPDX-License-Identifier: MIT
-pragma solidity >=0.4.22 <0.9.0;
+pragma solidity ^0.5.1;
+
+// HACK: should be removed along with the hack-ey migration
+// when https://github.com/trufflesuite/truffle/pull/1085 hits
+import "canonical-weth/contracts/WETH9.sol";
+
 
 contract Migrations {
-  address public owner = msg.sender;
-  uint public last_completed_migration;
+    address public owner;
+    uint public lastCompletedMigration;
 
-  modifier restricted() {
-    require(
-      msg.sender == owner,
-      "This function is restricted to the contract's owner"
-    );
-    _;
-  }
+    modifier restricted() {
+        if (msg.sender == owner) _;
+    }
 
-  function setCompleted(uint completed) public restricted {
-    last_completed_migration = completed;
-  }
+    constructor() public {
+        owner = msg.sender;
+    }
+
+    function setCompleted(uint completed) public restricted {
+        lastCompletedMigration = completed;
+    }
+
+    function upgrade(address newAddress) public restricted {
+        Migrations upgraded = Migrations(newAddress);
+        upgraded.setCompleted(lastCompletedMigration);
+    }
 }

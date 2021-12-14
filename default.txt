@@ -23,13 +23,13 @@ collateralToken = await CollateralToken.deployed()
 posId1 = await ct.getPositionId(collateralToken.address, '0x01b1c0f6150bad34f5e9e11d46d9d362bc41deb1764a6ed4f17f3896ef497e6d')
 posId2 = await ct.getPositionId(collateralToken.address, '0x040485e1e751f63c6ea96f9088d529b901428c79e00d2f41e5fab1e6b495ac37')
 
-p1 = posId1.toString();
-p2 = posId2.toString();
+p1 = posId1.valueOf();
+p2 = posId2.valueOf();
 
 
 
-// collateralToken.approve("0xF672eB74A0b9A504bAD59b3bfe670816714D9a63",1000)
-// collateralToken.mint("0xF672eB74A0b9A504bAD59b3bfe670816714D9a63",1000)
+collateralToken.approve("0xF672eB74A0b9A504bAD59b3bfe670816714D9a63",1000)
+collateralToken.mint("0xF672eB74A0b9A504bAD59b3bfe670816714D9a63",1000)
 
 
 tx_mint = await collateralToken.mint(ct.address,1000)
