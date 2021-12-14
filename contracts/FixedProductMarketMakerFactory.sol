@@ -1,3 +1,5 @@
+/// @dev Use local version of ConstructedCloneFactory.sol
+
 pragma solidity ^0.5.1;
 
 import { IERC20 } from "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";

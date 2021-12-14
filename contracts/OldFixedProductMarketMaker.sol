@@ -145,6 +145,10 @@ contract OldFixedProductMarketMaker is ERC20, ERC1155TokenReceiver {
         }
     }
 
+    /// @notice distributionHint sets proportion of add funds across outcomes
+    /// @dev default: binary pm ->distributionHint  pass an empty array []
+
+
     function addFunding(uint addedFunds, uint[] calldata distributionHint)
         external
     {
