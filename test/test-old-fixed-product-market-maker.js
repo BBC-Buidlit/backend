@@ -3,7 +3,7 @@ const { getConditionId, getCollectionId, getPositionId } = require('@gnosis.pm/c
 const { randomHex, toBN } = web3.utils
 
 const ConditionalTokens = artifacts.require('ConditionalTokens')
-const WETH9 = artifacts.require('WETH9')
+const CollateralToken = artifacts.require('CollateralToken')
 const FixedProductMarketMakerFactory = artifacts.require('FixedProductMarketMakerFactory')
 const OldFixedProductMarketMaker = artifacts.require('OldFixedProductMarketMaker')
 
@@ -22,7 +22,7 @@ contract('OldFixedProductMarketMaker', function([, creator, oracle, investor1, t
     let positionIds
     before(async function() {
         conditionalTokens = await ConditionalTokens.deployed();
-        collateralToken = await WETH9.deployed();
+        collateralToken = await CollateralToken.deployed();
         fixedProductMarketMakerFactory = await FixedProductMarketMakerFactory.deployed()
         positionIds = collectionIds.map(collectionId => getPositionId(collateralToken.address, collectionId))
     })
