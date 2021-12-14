@@ -1,6 +1,8 @@
 import { Types } from "mongoose";
+import BackendError from "../exceptions/backend_error";
 import BadRequest from "../exceptions/bad_request";
 import EntityNotFound from "../exceptions/entity_not_found";
+import ServerError from "../exceptions/server_error";
 import { IDiscordUser } from "../models/IDiscord";
 import userModel, { IUser } from "../models/IUser";
 
@@ -15,7 +17,7 @@ class UserService {
       throw new BadRequest(`Invalid user id : ${id}`);
 
     const user = await userModel.findById(id);
-    if (!user) throw new EntityNotFound("User not found ${id}", "user");
+    if (!user) throw new EntityNotFound(`User not found ${id}`, "user");
     return user;
   }
 
@@ -71,6 +73,19 @@ class UserService {
       refresh_token: refreshToken,
     };
     return await this.addOne({ ...user });
+  }
+
+
+  async update(user: Partial<Omit<IUser,"_id">>,id:string): Promise<IUser> {
+    try {
+      const updated =  await userModel.findByIdAndUpdate(id,user, {new:true});
+      if(!updated) throw new EntityNotFound("Failed to update user, user not found", "user");
+
+      return updated;
+    }catch(err) {
+      if( err instanceof BackendError) throw err;
+      throw new ServerError("Something went wrong while updating user");
+    }
   }
 }
 

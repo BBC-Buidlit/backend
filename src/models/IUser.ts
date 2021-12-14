@@ -8,21 +8,19 @@ export interface IUser {
   refresh_token: string;
   discord_id: string; // the uuid which maps to discord,
   _id: string;
+  private_key: string
 }
 
 const userSchema = new Schema({
   access_token: {
-    required: true,
-    unique: true,
     type: String,
   },
   username: {
-    required: true,
     type: String,
   },
   discord_id: {
-    required: true,
     unique: true,
+    sparse:true,
     type: String,
   },
   refresh_token: {
@@ -32,10 +30,14 @@ const userSchema = new Schema({
   wallet_id: {
     type: String,
     unique: true,
+    sparse:true
   },
   avatar_id: {
     type: String,
   },
+  private_key: {
+    type: String
+  }
 });
 
 const userModel = model<IUser>("user", userSchema);
