@@ -28696,10 +28696,17 @@
       "links": {},
       "address": "0xd7B9085dFC17eF58a154ce4B681f95b4cFe372c8",
       "transactionHash": "0x5d3bd223da9ccbf265028a3ca643edca73981414f7a9e1cfa92be5ceade21f6f"
+    },
+    "1639462626409": {
+      "events": {},
+      "links": {},
+      "address": "0xE5a68A260dA1e329cC57a737306E4e1e55740684",
+      "transactionHash": "0x7599b6ad651ad68167bb7be9d9f6c7bef7b4c3b9fda3efbf3a920f186b145457"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-12-14T00:09:36.346Z",
+  "updatedAt": "2021-12-14T06:35:49.554Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {
       "balanceOf(address,uint256)": {

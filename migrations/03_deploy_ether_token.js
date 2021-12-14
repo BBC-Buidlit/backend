@@ -1,5 +1,5 @@
+const CollateralToken = artifacts.require("CollateralToken");
+
 module.exports = function (deployer) {
-    deployer.deploy(artifacts.require('WETH9'), {
-        overwrite: false
-    })
-}
+  deployer.deploy(CollateralToken,"Respect","F");
+};

@@ -9,7 +9,7 @@ const OldFixedProductMarketMaker = artifacts.require('OldFixedProductMarketMaker
 
 contract('OldFixedProductMarketMaker', function([, creator, oracle, investor1, trader, investor2]) {
     const questionId = randomHex(32)
-    const numOutcomes = 64
+    const numOutcomes = 2
     const conditionId = getConditionId(oracle, questionId, numOutcomes)
     const collectionIds = Array.from(
         { length: numOutcomes },
@@ -54,7 +54,7 @@ contract('OldFixedProductMarketMaker', function([, creator, oracle, investor1, t
 
     const addedFunds1 = toBN(10e18)
     const initialDistribution = []
-    const expectedFundedAmounts = new Array(64).fill(addedFunds1)
+    const expectedFundedAmounts = new Array(2).fill(addedFunds1)
     step('can be funded', async function() {
         await collateralToken.deposit({ value: addedFunds1, from: investor1 });
         await collateralToken.approve(fixedProductMarketMaker.address, addedFunds1, { from: investor1 });

@@ -5,49 +5,49 @@ require("dotenv").config();
 
 const config = {
   networks: {
-    // mainnet: {
-    //   host: "localhost",
-    //   port: 8545,
-    //   network_id: "1",
-    // },
-    // ropsten: {
-    //   host: "localhost",
-    //   port: 8545,
-    //   network_id: "3",
-    // },
-    // kovan: {
-    //   host: "localhost",
-    //   port: 8545,
-    //   network_id: "42",
-    // },
-    // rinkeby: {
-    //   provider: function () {
-    //     return new HDWalletProvider(
-    //       process.env.mnemonic,
-    //       `https://rinkeby.infura.io/v3/${process.env.infuraId}`
-    //     );
-    //   },
-    //   network_id: "4",
-    // },
-    // sokol: {
-    //   provider: function () {
-    //     return new HDWalletProvider(
-    //       process.env.mnemonic,
-    //       `https://sokol.poa.network`
-    //     );
-    //   },
-    //   network_id: "77",
-    // },
-    // goerli: {
-    //   host: "localhost",
-    //   port: 8545,
-    //   network_id: "5",
-    // },
+    mainnet: {
+      host: "localhost",
+      port: 8545,
+      network_id: "1",
+    },
+    ropsten: {
+      host: "localhost",
+      port: 8545,
+      network_id: "3",
+    },
+    kovan: {
+      host: "localhost",
+      port: 8545,
+      network_id: "42",
+    },
+    rinkeby: {
+      provider: function () {
+        return new HDWalletProvider(
+          process.env.mnemonic,
+          `https://rinkeby.infura.io/v3/${process.env.infuraId}`
+        );
+      },
+      network_id: "4",
+    },
+    sokol: {
+      provider: function () {
+        return new HDWalletProvider(
+          process.env.mnemonic,
+          `https://sokol.poa.network`
+        );
+      },
+      network_id: "77",
+    },
+    goerli: {
+      host: "localhost",
+      port: 8545,
+      network_id: "5",
+    },
     develop: {
       host: "localhost",
       port: 8545,
       network_id: "*",
-    },
+    }
   },
   mocha: {
     enableTimeouts: false,
@@ -64,6 +64,7 @@ const config = {
       settings: {
         optimizer: {
           enabled: true,
+          runs: 50
         },
       },
     },
