@@ -28,7 +28,71 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Success: Get user details",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxYjNiZTQ4MzBmNWM1YmMyOTAwNDA0ZiIsImlhdCI6MTYzOTIzMDY4NH0.E3tnC1wbAQpIEbMgZO-V2qKFfhleSp6jRTd214ZtQwI",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:9000/user/",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"user",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "188"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"bc-VBNEx6FEQ7qC/QO7OG8YJJxYwgE\""
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 11 Dec 2021 19:56:44 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": \"61b3be4830f5c5bc2900404f\",\n    \"username\": \"iambatman\",\n    \"discord_id\": \"479352468283850752\",\n    \"avatar\": \"https://cdn.discordapp.com/avatars/479352468283850752/33a0d164516c2953c89d77893a4557d8\"\n}"
+				}
+			]
 		},
 		{
 			"name": "Owned discord servers",
@@ -125,6 +189,66 @@
 					"path": [
 						"server",
 						"61b4e0853988b1dfdcfaecca"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add wallet id to user",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxYjNiZTQ4MzBmNWM1YmMyOTAwNDA0ZiIsImlhdCI6MTYzOTUwMDA5MX0.IC5ets1iEXIJoS51884nTqN--V6uxHK8tXEiYIGIypM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"wallet_id\":\"0xcc9cDb8289Cb1755E25E2b2A3B1C47d5d0912982\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9000/user/import_wallet_id",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"user",
+						"import_wallet_id"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login using key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9000/auth/61b3be4830f5c5bc2900404f/login?key=$2b$10$YCyMqZVx0cQUfqKhI7ch9.6i/hh8Y/qilJNato9Gn6TTZH9MvmXMG",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"auth",
+						"61b3be4830f5c5bc2900404f",
+						"login"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "$2b$10$YCyMqZVx0cQUfqKhI7ch9.6i/hh8Y/qilJNato9Gn6TTZH9MvmXMG"
+						}
 					]
 				}
 			},
