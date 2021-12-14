@@ -10,20 +10,18 @@ Configure compilation and migration
 
 Configure dependencies from package.json
 
-##### npm i
+`npm i`
 
 ### locally run
 
-instantiate a local chain using ganache (previously testrpc)
-use ganache-cli or Download Ganache app image
-
-##### ganache-cli
+Instantiate a local chain using ganache (previously testrpc)
+use `ganache-cli` or Download Ganache app image
 
 ### Compile and Deploy contracts
 
 TIP: Enable optimiser
 
-##### truffle migrate --network (networkName)
+`truffle migrate --network (networkName)`
 
 networks : develop,mainnet,ropsten...
 
@@ -31,4 +29,4 @@ networks : develop,mainnet,ropsten...
 
 Run tests
 
-##### truffle test
+`truffle test`
