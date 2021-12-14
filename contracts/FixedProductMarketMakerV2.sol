@@ -1,16 +1,13 @@
-pragma solidity ^0.8.0;
-// import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+pragma solidity ^0.5.1;
 
-import { SafeMath } from "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import { ConditionalTokens } from "./ConditionalTokens.sol";
-import "./CollateralToken.sol";
-import { CTHelpers } from "./CTHelpers.sol";
-import {
-  ERC1155Receiver
-} from "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Receiver.sol";
-import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import { SafeMath } from "openzeppelin-solidity/contracts/math/SafeMath.sol";
+import { IERC20 } from "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import { ConditionalTokens } from "@gnosis.pm/conditional-tokens-contracts/contracts/ConditionalTokens.sol";
+import { CTHelpers } from "@gnosis.pm/conditional-tokens-contracts/contracts/CTHelpers.sol";
+import { ERC1155TokenReceiver } from "@gnosis.pm/conditional-tokens-contracts/contracts/ERC1155/ERC1155TokenReceiver.sol";
+import { ERC20 } from "./ERC20.sol";
+import { FPMMDeterministicFactoryV2 } from "./FPMMDeterministicFactoryV2.sol";
+
 
 library CeilDiv {
     // calculates ceil(x/y)
@@ -21,7 +18,7 @@ library CeilDiv {
 }
 
 
-contract FixedProductMarketMaker is ERC20, ERC1155Receiver {
+contract FixedProductMarketMakerV2 is ERC20, ERC1155TokenReceiver {
     event FPMMFundingAdded(
         address indexed funder,
         uint[] amountsAdded,
@@ -52,18 +49,17 @@ contract FixedProductMarketMaker is ERC20, ERC1155Receiver {
     using CeilDiv for uint;
 
     uint constant ONE = 10**18;
-  constructor() ERC20("GameItem", "ITM") {}
+
     ConditionalTokens public conditionalTokens;
     IERC20 public collateralToken;
     bytes32[] public conditionIds;
     uint public fee;
-    uint internal feePoolWeight;
 
     uint[] outcomeSlotCounts;
     bytes32[][] collectionIds;
     uint[] positionIds;
-    mapping (address => uint256) withdrawnFees;
-    uint internal totalWithdrawnFees;
+
+    address public factoryAddress;
 
     function getPoolBalances() private view returns (uint[] memory) {
         address[] memory thises = new address[](positionIds.length);
@@ -103,49 +99,6 @@ contract FixedProductMarketMaker is ERC20, ERC1155Receiver {
             for(uint j = 0; j < collectionIds[i].length; j++) {
                 conditionalTokens.mergePositions(collateralToken, collectionIds[i][j], conditionIds[i], partition, amount);
             }
-        }
-    }
-
-    function collectedFees() external view returns (uint) {
-        return feePoolWeight.sub(totalWithdrawnFees);
-    }
-
-    function feesWithdrawableBy(address account) public view returns (uint) {
-        uint rawAmount = feePoolWeight.mul(balanceOf(account)) / totalSupply();
-        return rawAmount.sub(withdrawnFees[account]);
-    }
-
-    function withdrawFees(address account) public {
-        uint rawAmount = feePoolWeight.mul(balanceOf(account)) / totalSupply();
-        uint withdrawableAmount = rawAmount.sub(withdrawnFees[account]);
-        if(withdrawableAmount > 0){
-            withdrawnFees[account] = rawAmount;
-            totalWithdrawnFees = totalWithdrawnFees.add(withdrawableAmount);
-            require(collateralToken.transfer(account, withdrawableAmount), "withdrawal transfer failed");
-        }
-    }
-
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal override {
-        if (from != address(0)) {
-            withdrawFees(from);
-        }
-
-        uint totalSupply = totalSupply();
-        uint withdrawnFeesTransfer = totalSupply == 0 ?
-            amount :
-            feePoolWeight.mul(amount) / totalSupply;
-
-        if (from != address(0)) {
-            withdrawnFees[from] = withdrawnFees[from].sub(withdrawnFeesTransfer);
-            totalWithdrawnFees = totalWithdrawnFees.sub(withdrawnFeesTransfer);
-        } else {
-            feePoolWeight = feePoolWeight.add(withdrawnFeesTransfer);
-        }
-        if (to != address(0)) {
-            withdrawnFees[to] = withdrawnFees[to].add(withdrawnFeesTransfer);
-            totalWithdrawnFees = totalWithdrawnFees.add(withdrawnFeesTransfer);
-        } else {
-            feePoolWeight = feePoolWeight.sub(withdrawnFeesTransfer);
         }
     }
 
@@ -241,7 +194,6 @@ contract FixedProductMarketMaker is ERC20, ERC1155Receiver {
         bytes calldata data
     )
         external
-        override
         returns (bytes4)
     {
         if (operator == address(this)) {
@@ -258,7 +210,6 @@ contract FixedProductMarketMaker is ERC20, ERC1155Receiver {
         bytes calldata data
     )
         external
-        override
         returns (bytes4)
     {
         if (operator == address(this) && from == address(0)) {
@@ -313,15 +264,26 @@ contract FixedProductMarketMaker is ERC20, ERC1155Receiver {
 
         require(collateralToken.transferFrom(msg.sender, address(this), investmentAmount), "cost transfer failed");
 
-        uint feeAmount = investmentAmount.mul(fee) / ONE;
-        feePoolWeight = feePoolWeight.add(feeAmount);
-        uint investmentAmountMinusFees = investmentAmount.sub(feeAmount);
-        require(collateralToken.approve(address(conditionalTokens), investmentAmountMinusFees), "approval for splits failed");
-        splitPositionThroughAllConditions(investmentAmountMinusFees);
+        uint totalFeeAmount = investmentAmount.mul(fee) / ONE;
+        uint totalCollateralToSplit = investmentAmount;
+
+        FPMMDeterministicFactoryV2 factory = FPMMDeterministicFactoryV2(factoryAddress);
+
+        bool protocolFeeOn = factory.protocolFeeOn();
+        uint8 protocolFeeDenominator = factory.protocolFeeDenominator();
+
+        if (protocolFeeOn && protocolFeeDenominator > 0) {
+            uint protocolFeeAmount = totalFeeAmount / protocolFeeDenominator;
+            totalCollateralToSplit = totalCollateralToSplit.sub(protocolFeeAmount);
+            require(collateralToken.transfer(factoryAddress, protocolFeeAmount), "protocol fee transfer failed");
+        }
+
+        require(collateralToken.approve(address(conditionalTokens), totalCollateralToSplit), "approval for splits failed");
+        splitPositionThroughAllConditions(totalCollateralToSplit);
 
         conditionalTokens.safeTransferFrom(address(this), msg.sender, positionIds[outcomeIndex], outcomeTokensToBuy, "");
 
-        emit FPMMBuy(msg.sender, investmentAmount, feeAmount, outcomeIndex, outcomeTokensToBuy);
+        emit FPMMBuy(msg.sender, investmentAmount, totalFeeAmount, outcomeIndex, outcomeTokensToBuy);
     }
 
     function sell(uint returnAmount, uint outcomeIndex, uint maxOutcomeTokensToSell) external {
@@ -330,14 +292,27 @@ contract FixedProductMarketMaker is ERC20, ERC1155Receiver {
 
         conditionalTokens.safeTransferFrom(msg.sender, address(this), positionIds[outcomeIndex], outcomeTokensToSell, "");
 
-        uint feeAmount = returnAmount.mul(fee) / (ONE.sub(fee));
-        feePoolWeight = feePoolWeight.add(feeAmount);
-        uint returnAmountPlusFees = returnAmount.add(feeAmount);
-        mergePositionsThroughAllConditions(returnAmountPlusFees);
+        uint totalFeeAmount = returnAmount.mul(fee) / (ONE.sub(fee));
 
-        require(collateralToken.transfer(msg.sender, returnAmount), "return transfer failed");
+        FPMMDeterministicFactoryV2 factory = FPMMDeterministicFactoryV2(factoryAddress);
 
-        emit FPMMSell(msg.sender, returnAmount, feeAmount, outcomeIndex, outcomeTokensToSell);
+        bool protocolFeeOn = factory.protocolFeeOn();
+        uint8 protocolFeeDenominator = factory.protocolFeeDenominator();
+
+        if (protocolFeeOn && protocolFeeDenominator > 0) {
+            uint protocolFeeAmount = totalFeeAmount / protocolFeeDenominator;
+            uint totalMergeAmount = returnAmount + protocolFeeAmount;
+            
+            mergePositionsThroughAllConditions(totalMergeAmount);
+
+            require(collateralToken.transfer(factoryAddress, protocolFeeAmount), "protocol fee transfer failed");
+            require(collateralToken.transfer(msg.sender, returnAmount), "return transfer failed");
+        } else {
+            mergePositionsThroughAllConditions(returnAmount);
+            require(collateralToken.transfer(msg.sender, returnAmount), "return transfer failed");
+        }
+
+        emit FPMMSell(msg.sender, returnAmount, totalFeeAmount, outcomeIndex, outcomeTokensToSell);
     }
 }
 
@@ -382,11 +357,10 @@ contract FixedProductMarketMakerData {
     IERC20 internal collateralToken;
     bytes32[] internal conditionIds;
     uint internal fee;
-    uint internal feePoolWeight;
 
     uint[] internal outcomeSlotCounts;
     bytes32[][] internal collectionIds;
     uint[] internal positionIds;
-    mapping (address => uint256) internal withdrawnFees;
-    uint internal totalWithdrawnFees;
+
+    address public factoryAddress;
 }

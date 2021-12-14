@@ -1,12 +1,12 @@
 pragma solidity >=0.4.24 ^0.5.1;
 
-contract ConstructedCloneFactory {
+contract Create2CloneFactory {
 
     event CloneCreated(address indexed target, address clone);
     
     function cloneConstructor(bytes calldata) external;
 
-    function createClone(address target, bytes memory consData) internal returns (address result) {
+    function create2Clone(address target, uint saltNonce, bytes memory consData) internal returns (address result) {
         bytes memory consPayload = abi.encodeWithSignature("cloneConstructor(bytes)", consData);
         bytes memory clone = new bytes(consPayload.length + 99);
 
@@ -22,17 +22,19 @@ contract ConstructedCloneFactory {
             mstore(add(clone, 116),
                 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)
         }
-        
+
         for(uint i = 0; i < consPayload.length; i++) {
             clone[99 + i] = consPayload[i];
         }
 
+        bytes32 salt = keccak256(abi.encode(msg.sender, saltNonce));
+
         assembly {
           let len := mload(clone)
           let data := add(clone, 0x20)
-          result := create(0, data, len)
+          result := create2(0, data, len, salt)
         }
         
-        require(result != address(0));
+        require(result != address(0), "create2 failed");
     }
 }
