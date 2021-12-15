@@ -57,4 +57,6 @@ The database is designed in a way to keep read queries fast as possible, conside
 
 ![Database Schema](https://cdn.discordapp.com/attachments/908632937405243445/918499771080130561/Screenshot_2021-12-09_at_7.20.02_PM.png)
 
+### Backend architecture
+
 ![Backend architecture](https://cdn.discordapp.com/attachments/908632937405243445/920208693772058634/1523b267-6d30-4489-8497-f1c4a81405f5.jpg)
