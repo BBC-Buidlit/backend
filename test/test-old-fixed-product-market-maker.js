@@ -3,13 +3,13 @@ const { getConditionId, getCollectionId, getPositionId } = require('@gnosis.pm/c
 const { randomHex, toBN } = web3.utils
 
 const ConditionalTokens = artifacts.require('ConditionalTokens')
-const WETH9 = artifacts.require('WETH9')
+const CollateralToken = artifacts.require('CollateralToken')
 const FixedProductMarketMakerFactory = artifacts.require('FixedProductMarketMakerFactory')
 const OldFixedProductMarketMaker = artifacts.require('OldFixedProductMarketMaker')
 
 contract('OldFixedProductMarketMaker', function([, creator, oracle, investor1, trader, investor2]) {
     const questionId = randomHex(32)
-    const numOutcomes = 64
+    const numOutcomes = 2
     const conditionId = getConditionId(oracle, questionId, numOutcomes)
     const collectionIds = Array.from(
         { length: numOutcomes },
@@ -22,7 +22,7 @@ contract('OldFixedProductMarketMaker', function([, creator, oracle, investor1, t
     let positionIds
     before(async function() {
         conditionalTokens = await ConditionalTokens.deployed();
-        collateralToken = await WETH9.deployed();
+        collateralToken = await CollateralToken.deployed();
         fixedProductMarketMakerFactory = await FixedProductMarketMakerFactory.deployed()
         positionIds = collectionIds.map(collectionId => getPositionId(collateralToken.address, collectionId))
     })
@@ -54,7 +54,7 @@ contract('OldFixedProductMarketMaker', function([, creator, oracle, investor1, t
 
     const addedFunds1 = toBN(10e18)
     const initialDistribution = []
-    const expectedFundedAmounts = new Array(64).fill(addedFunds1)
+    const expectedFundedAmounts = new Array(2).fill(addedFunds1)
     step('can be funded', async function() {
         await collateralToken.deposit({ value: addedFunds1, from: investor1 });
         await collateralToken.approve(fixedProductMarketMaker.address, addedFunds1, { from: investor1 });
