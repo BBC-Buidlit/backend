@@ -56,3 +56,5 @@ The file structure is as follows:
 The database is designed in a way to keep read queries fast as possible, considering we're fetching most of the data from Discord itself.
 
 ![Database Schema](https://cdn.discordapp.com/attachments/908632937405243445/918499771080130561/Screenshot_2021-12-09_at_7.20.02_PM.png)
+
+![Backend architecture](https://cdn.discordapp.com/attachments/908632937405243445/920208693772058634/1523b267-6d30-4489-8497-f1c4a81405f5.jpg)
